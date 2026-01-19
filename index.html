@@ -13,12 +13,11 @@
         
         /* 🌲 PREMIUM FOREST BACKGROUND 🌲 */
         .bg-forest {
-            background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2832&auto=format&fit=crop'); 
-            /* Alternate dark forest: https://images.unsplash.com/photo-1440621453304-44047df5d098?q=80&w=2600&auto=format */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            transition: background-image 1.5s ease-in-out; /* Smooth transition */
         }
 
         /* 💎 TRUE GLASSMORPHISM RETURN 💎 */
@@ -171,6 +170,29 @@
 
     <script>
         lucide.createIcons();
+
+        // 🌅 NIGHT & DAY CYCLE SYSTEM 🌙
+        function updateTimeAwareBackground() {
+            const hour = new Date().getHours();
+            const body = document.body;
+            
+            // Configuration
+            const isNight = hour >= 18 || hour < 6; // Night: 6PM - 6AM
+            
+            // 4K Wallpapers
+            const bgDay = "url('https://images.unsplash.com/photo-1448375240586-dfd8d395ea6c?q=80&w=2832&auto=format&fit=crop')"; // Sunny Forest
+            const bgNight = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2832&auto=format&fit=crop')"; // Starry Night
+            
+            // Apply
+            body.style.backgroundImage = isNight ? bgNight : bgDay;
+            
+            // Console Log for Debugging
+            console.log(`System Time: ${hour}h. Theme: ${isNight ? '🌌 NIGHT' : '☀️ DAY'}`);
+        }
+
+        // Initialize & Loop
+        updateTimeAwareBackground();
+        setInterval(updateTimeAwareBackground, 60000); // Check every minute
 
         function handleLogin(e) {
             e.preventDefault();
