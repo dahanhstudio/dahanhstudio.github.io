@@ -1,0 +1,273 @@
+# Claude Desktop MCP Integration
+
+Integrate Dạ Hành AG with Claude Desktop for seamless AI-assisted development.
+
+## What is MCP?
+
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is a standard for connecting AI assistants to external tools and data sources. Dạ Hành AG implements an MCP server that allows Claude to read and manage your tasks and documentation directly.
+
+## Setup
+
+### Option A: Auto Setup (Recommended)
+
+The easiest way to configure MCP:
+
+```bash
+# Setup both project .mcp.json and Claude Code global config
+dahanh mcp setup
+
+# Only create .mcp.json in project (for Claude Code auto-discovery)
+dahanh mcp setup --project
+
+# Only setup in Claude Code globally (skip .mcp.json)
+dahanh mcp setup --global
+```
+
+**What happens:**
+
+- `--project`: Creates `.mcp.json` in project root for auto-discovery
+- `--global`: Runs `claude mcp add-json dahanh` to add to Claude Code
+
+**Alternative: During `dahanh init`**
+
+When you select **MCP** as the AI Guidelines type during init, Dạ Hành AG automatically creates `.mcp.json`:
+
+```
+? AI Guidelines type: MCP
+✓ Created .mcp.json for Claude Code MCP auto-discovery
+```
+
+### Option B: Manual Setup
+
+### 1. Install Dạ Hành AG
+
+```bash
+# Using bun (recommended)
+bun install -g dahanh
+
+# Or using npm
+npm install -g dahanh
+```
+
+### 2. Configure Claude Desktop
+
+Edit Claude's configuration file:
+
+**macOS:**
+
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+**Windows:**
+
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+Add the Dạ Hành AG MCP server:
+
+```json
+{
+  "mcpServers": {
+    "dahanh": {
+      "command": "dahanh",
+      "args": ["mcp"],
+      "cwd": "/path/to/your/project"
+    }
+  }
+}
+```
+
+> **Note**: Replace `/path/to/your/project` with your actual project path where `.dahanh/` folder exists.
+
+### 3. Restart Claude Desktop
+
+Close and reopen Claude Desktop to load the new configuration.
+
+### 4. Sync MCP Guidelines (Optional)
+
+Sync your instruction files with MCP-formatted guidelines:
+
+```bash
+# Sync with full embedded MCP guidelines (default)
+dahanh agents sync --type mcp
+
+# Sync with minimal instruction only
+dahanh agents sync --type mcp --minimal
+
+# Sync all files
+dahanh agents sync --type mcp --all
+```
+
+This updates CLAUDE.md and other instruction files with MCP tool references instead of CLI commands.
+
+### MCP Guideline Tool
+
+AI agents can get **modular guidelines** on-demand via MCP:
+
+```
+mcp__dahanh__get_guideline({})                    # Full guidelines (all sections)
+mcp__dahanh__get_guideline({ type: "unified" })   # Same as above
+```
+
+Guidelines include these sections:
+
+- **Core Rules** - Golden rules, must-follow principles
+- **Commands Reference** - CLI/MCP commands quick reference
+- **Workflow Creation/Execution/Completion** - Stage-specific guides
+- **Common Mistakes** - Anti-patterns and DO vs DON'T
+
+## Usage
+
+Once configured, Claude can access your Dạ Hành AG data automatically.
+
+### Example Conversation
+
+```
+You: "Start working on task 42"
+
+Claude: [Reads task via MCP]
+"I see task #42 'Add user authentication' with these acceptance criteria:
+- User can login with email/password
+- JWT token is returned on success
+- Invalid credentials return 401
+
+The description references @doc/patterns/auth. Let me check that..."
+
+[Fetches patterns/auth.md via MCP]
+
+"Got it! The auth pattern uses JWT with 15-minute access tokens and
+7-day refresh tokens. I'll implement following this pattern.
+
+Starting timer and beginning implementation..."
+
+[Starts time tracking via MCP]
+```
+
+## Available MCP Tools
+
+### Task Management
+
+| Tool           | Description             | Parameters                                                                         |
+| -------------- | ----------------------- | ---------------------------------------------------------------------------------- |
+| `create_task`  | Tạo việc mới       | `title`, `description?`, `status?`, `priority?`, `labels?`, `assignee?`            |
+| `get_task`     | Get task by ID          | `taskId`                                                                           |
+| `update_task`  | Update task fields      | `taskId`, `title?`, `description?`, `status?`, `priority?`, `assignee?`, `labels?` |
+| `list_tasks`   | List tasks with filters | `status?`, `priority?`, `assignee?`, `label?`                                      |
+| `search_tasks` | Search tasks by query   | `query`                                                                            |
+
+### Time Tracking
+
+| Tool              | Description          | Parameters                             |
+| ----------------- | -------------------- | -------------------------------------- |
+| `start_time`      | Start timer for task | `taskId`                               |
+| `stop_time`       | Stop active timer    | `taskId`                               |
+| `add_time`        | Manual time entry    | `taskId`, `duration`, `note?`, `date?` |
+| `get_time_report` | Generate time report | `from?`, `to?`, `groupBy?`             |
+
+### Documentation
+
+| Tool          | Description     | Parameters                                                                          |
+| ------------- | --------------- | ----------------------------------------------------------------------------------- |
+| `list_docs`   | List all docs   | `tag?`                                                                              |
+| `get_doc`     | Get doc content | `path`, `info?`, `toc?`, `section?`                                                 |
+| `create_doc`  | Create new doc  | `title`, `description?`, `content?`, `tags?`, `folder?`                             |
+| `update_doc`  | Update doc      | `path`, `title?`, `description?`, `content?`, `appendContent?`, `tags?`, `section?` |
+| `search_docs` | Search docs     | `query`, `tag?`                                                                     |
+
+**Large Document Workflow:**
+
+```json
+// Step 1: Check size
+{ "path": "readme", "info": true }  // → estimatedTokens: 12132
+
+// Step 2: Get TOC (if >2000 tokens)
+{ "path": "readme", "toc": true }
+
+// Step 3: Read/Edit specific section
+{ "path": "readme", "section": "2" }  // Read section
+// update_doc with section + content replaces only that section
+```
+
+### Board
+
+| Tool        | Description            | Parameters |
+| ----------- | ---------------------- | ---------- |
+| `get_board` | Get kanban board state | -          |
+
+## Benefits
+
+### Zero Context Loss
+
+- AI reads your docs directly — no copy-paste
+- References (`@doc/...`, `@task-42`) are resolved automatically
+- Project patterns are always available
+
+### Consistent Implementations
+
+- AI follows your documented patterns every time
+- Same conventions across all sessions
+- No more "how does your auth work?" questions
+
+### Perfect Memory
+
+- Documentation persists between sessions
+- AI can reference any past decision
+- Knowledge doesn't live in chat history
+
+### Time Tracking Integration
+
+- AI can start/stop timers automatically
+- Track time spent on each task
+- Generate reports for retrospectives
+
+## Troubleshooting
+
+### Claude doesn't see Dạ Hành AG
+
+1. Verify installation: `dahanh --version`
+2. Check config file path is correct
+3. Ensure JSON syntax is valid
+4. Verify `cwd` points to a valid project with `.dahanh/` folder
+5. Restart Claude Desktop completely
+
+### MCP server not starting
+
+Run manually to check for errors:
+
+```bash
+dahanh mcp --verbose
+```
+
+### Tools not appearing
+
+Check if project is initialized:
+
+```bash
+cd your-project
+dahanh init  # if not already done
+```
+
+### Show MCP configuration info
+
+```bash
+dahanh mcp --info
+```
+
+## Alternative: --plain Output
+
+If you're not using Claude Desktop, use `--plain` flag for AI-readable output:
+
+```bash
+dahanh task 42 --plain | pbcopy  # Copy to clipboard
+dahanh doc "auth-pattern" --plain
+```
+
+Then paste into any AI assistant.
+
+## Resources
+
+- [MCP Protocol Specification](https://modelcontextprotocol.io/specification/2025-11-25)
+- [Dạ Hành AG MCP Server Documentation](../src/mcp/README.md)
+- [Claude Desktop Configuration](https://modelcontextprotocol.io/quickstart/user)

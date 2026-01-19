@@ -1,0 +1,777 @@
+# Command Reference
+
+Complete reference for all Dạ Hành AG CLI commands.
+
+## Task Commands
+
+### `dahanh task <id>` (Shorthand)
+
+View a single task (shorthand for `dahanh task view`).
+
+```bash
+dahanh task <id> [options]
+```
+
+| Option    | Description                |
+| --------- | -------------------------- |
+| `--plain` | Plain text output (for AI) |
+
+**Examples:**
+
+```bash
+dahanh task 42 --plain
+```
+
+### `dahanh task create`
+
+Tạo việc mới.
+
+```bash
+dahanh task create "Title" [options]
+```
+
+| Option              | Description                       |
+| ------------------- | --------------------------------- |
+| `-d, --description` | Task description                  |
+| `--ac`              | Acceptance criterion (repeatable) |
+| `-l, --labels`      | Comma-separated labels            |
+| `--priority`        | `low`, `medium`, `high`           |
+| `-a, --assignee`    | Assignee (e.g., `@me`, `@john`)   |
+| `--parent`          | Parent task ID for subtasks       |
+
+**Examples:**
+
+```bash
+# Basic task
+dahanh task create "Fix login bug"
+
+# Task with details
+dahanh task create "Add authentication" \
+  -d "Implement JWT auth following @doc/patterns/auth" \
+  --ac "User can login" \
+  --ac "Session persists" \
+  --priority high \
+  -l "feature,auth"
+
+# Subtask
+dahanh task create "Write unit tests" --parent 42
+```
+
+### `dahanh task list`
+
+Xem danh sách việc.
+
+```bash
+dahanh task list [options]
+```
+
+| Option       | Description                |
+| ------------ | -------------------------- |
+| `--status`   | Filter by status           |
+| `--priority` | Filter by priority         |
+| `--assignee` | Filter by assignee         |
+| `--label`    | Filter by label            |
+| `--tree`     | Show as tree hierarchy     |
+| `--plain`    | Plain text output (for AI) |
+
+**Examples:**
+
+```bash
+dahanh task list --plain
+dahanh task list --status in-progress --assignee @me
+dahanh task list --tree --plain
+```
+
+### `dahanh task view`
+
+View a single task (full command form).
+
+```bash
+dahanh task view <id> [options]
+```
+
+| Option    | Description                |
+| --------- | -------------------------- |
+| `--plain` | Plain text output (for AI) |
+
+### `dahanh task edit`
+
+Edit an existing task.
+
+```bash
+dahanh task edit <id> [options]
+```
+
+| Option              | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| `-t, --title`       | New title                                             |
+| `-d, --description` | New description                                       |
+| `-s, --status`      | `todo`, `in-progress`, `in-review`, `blocked`, `done` |
+| `--priority`        | `low`, `medium`, `high`                               |
+| `-a, --assignee`    | Assignee                                              |
+| `-l, --labels`      | Labels (replaces existing)                            |
+| `--ac`              | Add acceptance criterion                              |
+| `--check-ac`        | Check criterion (1-indexed)                           |
+| `--uncheck-ac`      | Uncheck criterion                                     |
+| `--remove-ac`       | Remove criterion                                      |
+| `--plan`            | Set implementation plan                               |
+| `--notes`           | Set implementation notes                              |
+| `--append-notes`    | Append to notes                                       |
+
+**Examples:**
+
+```bash
+# Change status and assignee
+dahanh task edit 42 -s in-progress -a @me
+
+# Check acceptance criteria
+dahanh task edit 42 --check-ac 1 --check-ac 2
+
+# Add implementation plan
+dahanh task edit 42 --plan $'1. Research\n2. Implement\n3. Test'
+
+# Add notes progressively
+dahanh task edit 42 --append-notes "Completed auth middleware"
+```
+
+### `dahanh task validate`
+
+Validate a task file format.
+
+```bash
+dahanh task validate <id> [options]
+```
+
+| Option    | Description       |
+| --------- | ----------------- |
+| `--plain` | Plain text output |
+
+### `dahanh task repair`
+
+Repair a corrupted task file.
+
+```bash
+dahanh task repair <id> [options]
+```
+
+| Option    | Description       |
+| --------- | ----------------- |
+| `--plain` | Plain text output |
+
+---
+
+## Documentation Commands
+
+### `dahanh doc <path>` (Shorthand)
+
+View a document (shorthand for `dahanh doc view`).
+
+```bash
+dahanh doc <name-or-path> [options]
+```
+
+| Option              | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `--plain`           | Plain text output (for AI)                       |
+| `--info`            | Show document stats (size, tokens, headings)     |
+| `--toc`             | Show table of contents only                      |
+| `--section <title>` | Show specific section by heading title or number |
+
+**Examples:**
+
+```bash
+dahanh doc "README" --plain
+dahanh doc "patterns/auth" --plain
+
+# For large documents - check size first
+dahanh doc "README" --info --plain
+# Output: Size: 42,461 chars (~12,132 tokens) | Headings: 83
+
+# Get table of contents
+dahanh doc "README" --toc --plain
+
+# Read specific section
+dahanh doc "README" --section "2. Installation" --plain
+dahanh doc "README" --section "2" --plain  # By number
+```
+
+### `dahanh doc create`
+
+Create a new document.
+
+```bash
+dahanh doc create "Title" [options]
+```
+
+| Option              | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `-d, --description` | Document description                               |
+| `-t, --tags`        | Comma-separated tags                               |
+| `-f, --folder`      | Folder path (e.g., `patterns`, `architecture/api`) |
+
+**Examples:**
+
+```bash
+# Simple doc
+dahanh doc create "API Guidelines" -d "REST API conventions"
+
+# Doc in folder
+dahanh doc create "Auth Pattern" \
+  -d "JWT authentication pattern" \
+  -t "patterns,security" \
+  -f patterns
+```
+
+### `dahanh doc list`
+
+List all documents.
+
+```bash
+dahanh doc list [path] [options]
+```
+
+| Argument | Description                                          |
+| -------- | ---------------------------------------------------- |
+| `[path]` | Filter by folder path (e.g., `guides/`, `patterns/`) |
+
+| Option    | Description                                      |
+| --------- | ------------------------------------------------ |
+| `--tag`   | Filter by tag                                    |
+| `--plain` | Plain text output (tree format, token-efficient) |
+
+**Examples:**
+
+```bash
+# List all docs
+dahanh doc list
+
+# List docs in specific folder
+dahanh doc list "guides/"
+dahanh doc list "patterns/" --plain
+
+# Filter by tag
+dahanh doc list --tag architecture
+```
+
+### `dahanh doc view`
+
+View a document.
+
+```bash
+dahanh doc view <name-or-path> [options]
+```
+
+| Option              | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `--plain`           | Plain text output                                |
+| `--info`            | Show document stats (size, tokens, headings)     |
+| `--toc`             | Show table of contents only                      |
+| `--section <title>` | Show specific section by heading title or number |
+
+**Examples:**
+
+```bash
+dahanh doc view "auth-pattern" --plain
+dahanh doc view "patterns/auth-pattern" --plain
+dahanh doc view "README" --info --plain      # Check size first
+dahanh doc view "README" --toc --plain       # Get TOC
+dahanh doc view "README" --section "2" --plain  # Read section
+```
+
+### `dahanh doc edit`
+
+Edit a document.
+
+```bash
+dahanh doc edit <name-or-path> [options]
+```
+
+| Option                  | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
+| `-t, --title`           | New title                                                |
+| `--tags`                | New tags                                                 |
+| `-c, --content`         | Replace content (or section content if `--section` used) |
+| `-a, --append`          | Append to content                                        |
+| `--section <title>`     | Target section to replace (use with `-c`)                |
+| `--content-file <path>` | Replace content with file contents                       |
+| `--append-file <path>`  | Append file contents to document                         |
+
+**Examples:**
+
+```bash
+# Edit content directly
+dahanh doc edit "README" -c "New content here"
+
+# Append content
+dahanh doc edit "README" -a "## New Section"
+
+# Edit specific section only (context-efficient!)
+dahanh doc edit "README" --section "2. Installation" -c "New section content"
+dahanh doc edit "README" --section "2" -c "New content"  # By number
+
+# Use file for long content (useful on Windows)
+dahanh doc edit "README" --content-file ./new-content.md
+dahanh doc edit "README" --append-file ./additional-section.md
+```
+
+### `dahanh doc validate`
+
+Validate a documentation file format.
+
+```bash
+dahanh doc validate <name> [options]
+```
+
+| Option    | Description       |
+| --------- | ----------------- |
+| `--plain` | Plain text output |
+
+### `dahanh doc repair`
+
+Repair a corrupted documentation file.
+
+```bash
+dahanh doc repair <name> [options]
+```
+
+| Option    | Description       |
+| --------- | ----------------- |
+| `--plain` | Plain text output |
+
+### `dahanh doc search-in`
+
+Search text within a specific document.
+
+```bash
+dahanh doc search-in <name> <query> [options]
+```
+
+| Option              | Description             |
+| ------------------- | ----------------------- |
+| `-i, --ignore-case` | Case insensitive search |
+| `--plain`           | Plain text output       |
+
+### `dahanh doc replace`
+
+Replace text in a document.
+
+```bash
+dahanh doc replace <name> <old-text> <new-text> [options]
+```
+
+| Option      | Description             |
+| ----------- | ----------------------- |
+| `-a, --all` | Replace all occurrences |
+| `--plain`   | Plain text output       |
+
+### `dahanh doc replace-section`
+
+Replace an entire section by its header.
+
+```bash
+dahanh doc replace-section <name> <header> <content> [options]
+```
+
+| Option    | Description       |
+| --------- | ----------------- |
+| `--plain` | Plain text output |
+
+---
+
+## Theo dõi thời gian Commands
+
+### `dahanh time start`
+
+Start tracking time on a task.
+
+```bash
+dahanh time start <task-id>
+```
+
+### `dahanh time stop`
+
+Stop the current timer.
+
+```bash
+dahanh time stop
+```
+
+### `dahanh time pause` / `dahanh time resume`
+
+Pause or resume the current timer.
+
+```bash
+dahanh time pause
+dahanh time resume
+```
+
+### `dahanh time status`
+
+Show current timer status.
+
+```bash
+dahanh time status
+```
+
+### `dahanh time add`
+
+Add manual time entry.
+
+```bash
+dahanh time add <task-id> <duration> [options]
+```
+
+| Option       | Description       |
+| ------------ | ----------------- |
+| `-n, --note` | Note for entry    |
+| `-d, --date` | Date (YYYY-MM-DD) |
+
+**Examples:**
+
+```bash
+dahanh time add 42 2h -n "Code review"
+dahanh time add 42 30m -d "2025-01-15"
+```
+
+### `dahanh time report`
+
+Generate time report.
+
+```bash
+dahanh time report [options]
+```
+
+| Option       | Description             |
+| ------------ | ----------------------- |
+| `--from`     | Start date (YYYY-MM-DD) |
+| `--to`       | End date (YYYY-MM-DD)   |
+| `--by-label` | Group by label          |
+| `--csv`      | CSV output              |
+
+---
+
+## Search Commands
+
+### `dahanh search`
+
+Search tasks and documentation.
+
+```bash
+dahanh search <query> [options]
+```
+
+| Option       | Description              |
+| ------------ | ------------------------ |
+| `--type`     | `task` or `doc`          |
+| `--status`   | Filter tasks by status   |
+| `--priority` | Filter tasks by priority |
+| `--plain`    | Plain text output        |
+
+---
+
+## Other Commands
+
+### `dahanh init`
+
+Initialize Dạ Hành AG in current directory with interactive wizard.
+
+**Requirement:** Git must be initialized first (`git init`).
+
+```bash
+dahanh init [project-name] [options]
+```
+
+| Option        | Description                               |
+| ------------- | ----------------------------------------- |
+| `--wizard`    | Force interactive wizard mode             |
+| `--no-wizard` | Skip wizard, use defaults                 |
+| `-f, --force` | Reinitialize (overwrites existing config) |
+
+**Examples:**
+
+```bash
+# Interactive wizard (default when no name provided)
+dahanh init
+
+# Quick init with name
+dahanh init my-project
+
+# Force reinitialize
+dahanh init --force
+```
+
+**Wizard prompts:**
+
+- Project name
+- Chế độ theo dõi Git (`git-tracked` or `git-ignored`)
+- AI guidelines type (`CLI` or `MCP`)
+- AI agent files to sync (CLAUDE.md, AGENTS.md, etc.)
+
+**When MCP is selected:**
+
+- Automatically creates `.mcp.json` for Claude Code auto-discovery
+
+**Git Tracking Modes:**
+
+| Mode          | Description                                                 |
+| ------------- | ----------------------------------------------------------- |
+| `git-tracked` | All `.dahanh/` files tracked in git (recommended for teams) |
+| `git-ignored` | Only docs tracked, tasks/config ignored (personal use)      |
+
+When `git-ignored` is selected, Dạ Hành AG automatically updates `.gitignore` to exclude task files while keeping docs tracked.
+
+### `dahanh config`
+
+Manage project configuration.
+
+```bash
+dahanh config <command> [key] [value]
+```
+
+**Commands:**
+
+```bash
+# Get a config value
+dahanh config get defaultAssignee --plain
+
+# Set a config value
+dahanh config set defaultAssignee "@john"
+
+# List all config
+dahanh config list
+```
+
+### `dahanh browser`
+
+Open Web UI in browser.
+
+```bash
+dahanh browser [options]
+```
+
+| Option       | Description                 |
+| ------------ | --------------------------- |
+| `-p, --port` | Custom port (default: 6420) |
+| `--no-open`  | Don't open browser          |
+
+### `dahanh mcp`
+
+Start MCP server for Claude Desktop integration.
+
+```bash
+dahanh mcp [options]
+```
+
+| Option      | Description                     |
+| ----------- | ------------------------------- |
+| `--info`    | Show configuration instructions |
+| `--verbose` | Enable verbose logging          |
+
+**Examples:**
+
+```bash
+# Show setup instructions
+dahanh mcp --info
+
+# Start server with logging
+dahanh mcp --verbose
+```
+
+### `dahanh mcp setup`
+
+Setup Dạ Hành AG MCP server in Claude Code.
+
+```bash
+dahanh mcp setup [options]
+```
+
+| Option      | Description                                                 |
+| ----------- | ----------------------------------------------------------- |
+| `--project` | Only create `.mcp.json` in project (skip Claude Code setup) |
+| `--global`  | Only setup in Claude Code globally (skip `.mcp.json`)       |
+
+**What happens:**
+
+- Creates `.mcp.json` in project root for auto-discovery
+- Runs `claude mcp add-json dahanh` to add to Claude Code
+
+**Examples:**
+
+```bash
+# Setup both project .mcp.json and Claude Code global config
+dahanh mcp setup
+
+# Only create .mcp.json in project
+dahanh mcp setup --project
+
+# Only setup in Claude Code globally
+dahanh mcp setup --global
+```
+
+### `dahanh agents`
+
+Manage AI agent instruction files and guidelines.
+
+```bash
+dahanh agents [options]
+```
+
+| Option                  | Description                                                   |
+| ----------------------- | ------------------------------------------------------------- |
+| (none)                  | Interactive mode - prompts to select type, variant, and files |
+| `--update-instructions` | Non-interactive update                                        |
+| `--type <type>`         | Guidelines type: `cli` or `mcp` (default: cli)                |
+| `--files <files>`       | Comma-separated list of files to update                       |
+
+**Supported files:**
+
+| File                              | Description              | Default |
+| --------------------------------- | ------------------------ | ------- |
+| `CLAUDE.md`                       | Claude Code instructions | ✓       |
+| `AGENTS.md`                       | Agent SDK                | ✓       |
+| `GEMINI.md`                       | Google Gemini            |         |
+| `.github/copilot-instructions.md` | GitHub Copilot           |         |
+
+**Examples:**
+
+```bash
+# Interactive mode - select type, variant, and files
+dahanh agents
+
+# Non-interactive update (uses defaults)
+dahanh agents --update-instructions
+
+# Update specific files with MCP version
+dahanh agents --update-instructions --type mcp --files "CLAUDE.md,AGENTS.md"
+```
+
+### `dahanh agents guideline`
+
+Output guidelines to stdout. AI agents should call this at session start.
+
+```bash
+dahanh agents guideline [options]
+```
+
+| Option            | Description                                                                 |
+| ----------------- | --------------------------------------------------------------------------- |
+| (none)            | Output full guidelines (all sections)                                       |
+| `--full`          | Output full guidelines (all sections)                                       |
+| `--compact`       | Output compact guidelines (core rules + common mistakes)                    |
+| `--stage <stage>` | Output guidelines for specific stage: `creation`, `execution`, `completion` |
+| `--core`          | Output core rules only                                                      |
+| `--commands`      | Output commands reference only                                              |
+| `--mistakes`      | Output common mistakes only                                                 |
+| `--cli`           | (Legacy) Same as default                                                    |
+| `--mcp`           | (Legacy) Same as default                                                    |
+
+**Guidelines Structure (Modular):**
+
+| Section             | Description                          |
+| ------------------- | ------------------------------------ |
+| Core Rules          | Golden rules, must-follow principles |
+| Commands Reference  | CLI/MCP commands quick reference     |
+| Workflow Creation   | Task creation workflow               |
+| Workflow Execution  | Task execution workflow              |
+| Workflow Completion | Task completion workflow             |
+| Common Mistakes     | Anti-patterns and DO vs DON'T        |
+
+**Examples:**
+
+```bash
+# Full guidelines (default)
+dahanh agents guideline
+
+# Compact for quick reference
+dahanh agents guideline --compact
+
+# Stage-specific guidelines
+dahanh agents guideline --stage creation    # When creating tasks
+dahanh agents guideline --stage execution   # When implementing
+dahanh agents guideline --stage completion  # When finishing
+
+# Individual sections
+dahanh agents guideline --core       # Core rules only
+dahanh agents guideline --commands   # Commands reference
+dahanh agents guideline --mistakes   # Common mistakes
+```
+
+### `dahanh agents sync`
+
+Quick sync of agent instruction files with latest guidelines.
+
+```bash
+dahanh agents sync [options]
+```
+
+| Option          | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
+| `--type <type>` | Guidelines type: `cli` or `mcp` (default: cli)              |
+| `--minimal`     | Use minimal instruction (default: full embedded guidelines) |
+| `--all`         | Update all instruction files (including Gemini, Copilot)    |
+
+**Template variants:**
+
+| Variant                   | Size  | Description                                          |
+| ------------------------- | ----- | ---------------------------------------------------- |
+| general (default)         | ~26KB | Full modular guidelines embedded in file             |
+| instruction (`--minimal`) | ~1KB  | Minimal - tells AI to call `dahanh agents guideline` |
+
+**Examples:**
+
+```bash
+# Sync default files (CLAUDE.md, AGENTS.md) with full guidelines
+dahanh agents sync
+
+# Sync all files
+dahanh agents sync --all
+
+# Sync with minimal instruction only
+dahanh agents sync --minimal
+
+# Sync with MCP guidelines
+dahanh agents sync --type mcp
+```
+
+---
+
+## Output Formats
+
+### `--plain`
+
+Plain text output optimized for AI consumption. Always use this when working with AI assistants.
+
+```bash
+dahanh task 42 --plain
+dahanh doc list --plain
+dahanh search "auth" --plain
+```
+
+---
+
+## Multi-line Input
+
+### Bash / Zsh
+
+```bash
+dahanh task edit 42 --plan $'1. Step one\n2. Step two\n3. Step three'
+```
+
+### PowerShell
+
+```powershell
+dahanh task edit 42 --notes "Line 1`nLine 2`nLine 3"
+```
+
+### Heredoc (long content)
+
+```bash
+dahanh task edit 42 --plan "$(cat <<EOF
+1. Research existing patterns
+2. Design solution
+3. Implement
+4. Write tests
+5. Update documentation
+EOF
+)"
+```
