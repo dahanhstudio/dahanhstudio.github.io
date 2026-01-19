@@ -21,30 +21,63 @@
             background-attachment: fixed;
         }
 
-        /* 💎 VIP GLASSMORPHISM 💎 */
+        /* 💎 VIP GLASSMORPHISM UPDATED 💎 */
         .glass-card {
-            background: rgba(18, 18, 28, 0.4); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            background: rgba(10, 10, 18, 0.75); /* Darker & more premium */
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 1.5rem; /* Match rounded-3xl */
+            box-shadow: 0 0 40px -10px rgba(0, 0, 0, 0.7); /* Deeper shadow */
+            z-index: 10;
+            overflow: hidden; /* Keep content inside border */
+        }
+
+        /* 🌈 MOVING BORDER ANIMATION 🌈 */
+        .border-container {
+            position: relative;
+            z-index: 0;
+            border-radius: 1.6rem; /* Slightly larger than card */
+            overflow: hidden;
+            padding: 2px; /* Border thickness */
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .border-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, 
+                rgba(99, 102, 241, 0.8), 
+                transparent 30%
+            );
+            animation: rotate 4s linear infinite;
+            z-index: -2;
         }
 
         .glass-input {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Finer border */
             color: #e2e8f0;
             transition: all 0.3s ease;
         }
 
         .glass-input:focus {
             background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); /* Soft glow */
             outline: none;
         }
 
         /* ✨ ANIMATIONS ✨ */
+        @keyframes rotate {
+            100% { transform: rotate(1turn); }
+        }
+
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -56,7 +89,7 @@
         .delay-300 { animation-delay: 0.3s; }
 
         .glow-text {
-            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            text-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
         }
     </style>
 </head>
@@ -88,47 +121,49 @@
             </div>
         </div>
 
-        <!-- The Glass Card -->
-        <div class="glass-card rounded-3xl p-8 md:p-10 animate-fade-up delay-200">
-            
-            <form onsubmit="handleLogin(event)" class="space-y-6">
-                <!-- Username -->
-                <div class="space-y-2">
-                    <label class="text-[10px] uppercase tracking-wider font-semibold text-slate-400 ml-1">Identity</label>
-                    <div class="relative group">
-                        <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"></i>
-                        <input type="text" value="dahanhstudio" readonly 
-                            class="glass-input w-full pl-12 pr-4 py-3.5 rounded-xl text-sm font-medium cursor-not-allowed opacity-70">
-                        <div class="absolute right-3 top-3.5">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+        <!-- The Glass Card Wrapper for Animated Border -->
+        <div class="border-container animate-fade-up delay-200">
+            <div class="glass-card p-8 md:p-10">
+                
+                <form onsubmit="handleLogin(event)" class="space-y-6">
+                    <!-- Username -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-wider font-semibold text-slate-400 ml-1">Identity</label>
+                        <div class="relative group">
+                            <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"></i>
+                            <input type="text" value="dahanhstudio" readonly 
+                                class="glass-input w-full pl-12 pr-4 py-3.5 rounded-xl text-sm font-medium cursor-not-allowed opacity-70">
+                            <div class="absolute right-3 top-3.5">
+                                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Password -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center ml-1">
-                        <label class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Passkey</label>
+                    <!-- Password -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center ml-1">
+                            <label class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Passkey</label>
+                        </div>
+                        <div class="relative group">
+                            <i data-lucide="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"></i>
+                            <input type="password" placeholder="Enter access code..." 
+                                class="glass-input w-full pl-12 pr-4 py-3.5 rounded-xl text-sm font-medium placeholder-slate-600 focus:placeholder-slate-500">
+                        </div>
                     </div>
-                    <div class="relative group">
-                        <i data-lucide="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"></i>
-                        <input type="password" placeholder="Enter access code..." 
-                            class="glass-input w-full pl-12 pr-4 py-3.5 rounded-xl text-sm font-medium placeholder-slate-600 focus:placeholder-slate-500">
-                    </div>
+
+                    <!-- Action Button -->
+                    <button type="submit" 
+                        class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-sm tracking-wide shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group">
+                        <span>ACCESS SYSTEM</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </form>
+
+                <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                    <p class="text-[10px] text-slate-500 font-mono">
+                        SECURE CONNECTION • 256-BIT ENCRYPTION
+                    </p>
                 </div>
-
-                <!-- Action Button -->
-                <button type="submit" 
-                    class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-sm tracking-wide shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group">
-                    <span>ACCESS SYSTEM</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                </button>
-            </form>
-
-            <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                <p class="text-[10px] text-slate-500 font-mono">
-                    SECURE CONNECTION • 256-BIT ENCRYPTION
-                </p>
             </div>
         </div>
 
