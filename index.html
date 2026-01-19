@@ -101,10 +101,13 @@
         
         <!-- Header -->
         <div class="text-center mb-10 animate-fade-up delay-100">
-             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md mb-5 shadow-2xl">
-                <i data-lucide="triangle" class="w-8 h-8 text-indigo-300 fill-indigo-400/10 rotate-180"></i>
+             <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md mb-5 shadow-2xl overflow-hidden p-1">
+                <!-- Official Brand Logo -->
+                <img src="https://raw.githubusercontent.com/lenzcomvth/Somethings/refs/heads/main/unnamed.jpg" 
+                     alt="Dạ Hành Studio" 
+                     class="w-full h-full object-cover rounded-xl opacity-90 hover:opacity-100 transition-opacity">
             </div>
-            <h1 class="text-3xl font-bold text-white tracking-tight mb-2 brand-font glow-text">ANTIGRAVITY</h1>
+            <h1 class="text-3xl font-bold text-white tracking-tight mb-2 brand-font glow-text">DẠ HÀNH STUDIO</h1>
             <div class="flex items-center justify-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <p class="text-[10px] font-mono uppercase tracking-[0.3em] text-indigo-300/70">System Online</p>
@@ -113,17 +116,16 @@
 
         <!-- The TRUE Glass Card -->
         <div class="relative animate-fade-up delay-200">
-            
-            <!-- 1. The Moving Star Border (Separated) -->
+            <!-- ... border track ... -->
             <div class="border-track">
                 <div class="star-spinner"></div>
             </div>
 
-            <!-- 2. The Glass Content -->
+            <!-- ... glass content ... -->
             <div class="glass-card p-9">
                 
                 <form onsubmit="handleLogin(event)" class="space-y-6">
-                    <!-- Username -->
+                    <!-- ... inputs ... -->
                     <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 ml-1">Identity</label>
                         <div class="relative group">
@@ -136,7 +138,6 @@
                         </div>
                     </div>
 
-                    <!-- Password -->
                     <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 ml-1">Passkey</label>
                         <div class="relative group">
@@ -146,7 +147,6 @@
                         </div>
                     </div>
 
-                    <!-- Button -->
                     <button type="submit" 
                         class="w-full py-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold text-xs tracking-[0.15em] shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 flex items-center justify-center gap-3 group mt-4 overflow-hidden relative">
                         <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-indigo-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
@@ -155,15 +155,23 @@
                     </button>
                 </form>
 
-                <div class="mt-8 pt-6 border-t border-white/5 text-center flex justify-center gap-6">
-                   <a href="#" class="text-[10px] text-slate-500 hover:text-indigo-300 transition-colors uppercase tracking-wider">Recovery</a>
-                   <a href="#" class="text-[10px] text-slate-500 hover:text-indigo-300 transition-colors uppercase tracking-wider">Encryption</a>
+                <!-- Social & Support Footer -->
+                <div class="mt-8 pt-6 border-t border-white/5 flex justify-center gap-4">
+                   <a href="https://facebook.com/lenzc0m" target="_blank" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group relative" title="Facebook">
+                        <img src="https://raw.githubusercontent.com/lenzcomvth/Somethings/refs/heads/main/fb.PNG" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity rounded-full">
+                   </a>
+                   <a href="https://zalo.me/0914128658" target="_blank" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group" title="Zalo">
+                        <img src="https://raw.githubusercontent.com/lenzcomvth/Somethings/refs/heads/main/zalo.png" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity rounded-full">
+                   </a>
+                   <a href="#" onclick="showDonate()" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group" title="Donate">
+                        <i data-lucide="coffee" class="w-5 h-5 text-slate-400 group-hover:text-amber-400 transition-colors"></i>
+                   </a>
                 </div>
             </div>
         </div>
 
         <p class="text-center text-slate-500/50 text-[10px] mt-8 font-mono animate-fade-up delay-300">
-            DẠ HÀNH STUDIO © 2026 • AUTHORIZED PERSONNEL ONLY
+            © 2026 DẠ HÀNH STUDIO • AUTHORIZED PERSONNEL ONLY
         </p>
 
     </main>
@@ -193,6 +201,12 @@
         // Initialize & Loop
         updateTimeAwareBackground();
         setInterval(updateTimeAwareBackground, 60000); // Check every minute
+
+        function showDonate() {
+            // Simple alert for now, or could act as a toggle if we had a modal.
+            // But let's just open the QR code new tab for simplicity as per config
+            window.open('https://raw.githubusercontent.com/lenzcomvth/Somethings/refs/heads/main/qr.jpg', '_blank');
+        }
 
         function handleLogin(e) {
             e.preventDefault();
