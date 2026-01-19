@@ -1,0 +1,31 @@
+# 🛑 DẠ HÀNH STUDIO - SYSTEM PERMISSION LOCK (IRREVOCABLE)
+# This file governs the behavior of the AI Agent.
+# IT MUST NEVER BE DELETED.
+
+system_lock:
+  status: ACTIVE
+  override_allowed: FALSE
+
+permissions:
+  # 🚫 STRICTLY FORBIDDEN ACTIONS
+  auto_run:
+    enabled: FALSE
+    reason: "User denied permission for autonomous execution."
+  
+  auto_delete:
+    enabled: FALSE
+    reason: "Deletion requires explicit manual approval."
+  
+  rename_folders:
+    enabled: FALSE
+    reason: "Folder structure is fixed."
+
+  # ✅ ALLOWED ACTIONS (REQUIRES APPROVAL)
+  read_file: TRUE
+  list_dir: TRUE
+  create_file: TRUE (Only inside defined scope)
+
+enforcement:
+  # The agent must check this file before EVERY action.
+  # If this file is missing, the agent must STOP immediately.
+  mandatory_check: TRUE
