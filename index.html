@@ -24,23 +24,20 @@
         /* 💎 VIP GLASSMORPHISM UPDATED 💎 */
         .glass-card {
             position: relative;
-            background: rgba(10, 10, 18, 0.75); /* Darker & more premium */
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 1.5rem; /* Match rounded-3xl */
-            box-shadow: 0 0 40px -10px rgba(0, 0, 0, 0.7); /* Deeper shadow */
+            background: #09090b; /* Solid dark to block spinner center */
+            border-radius: 1.5rem; 
             z-index: 10;
-            overflow: hidden; /* Keep content inside border */
+            overflow: hidden; 
         }
 
         /* 🌈 MOVING BORDER ANIMATION 🌈 */
         .border-container {
             position: relative;
             z-index: 0;
-            border-radius: 1.6rem; /* Slightly larger than card */
+            border-radius: 1.6rem; 
             overflow: hidden;
             padding: 2px; /* Border thickness */
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            /* Removed external shadow */
         }
 
         .border-container::before {
@@ -52,7 +49,7 @@
             height: 200%;
             background: conic-gradient(
                 transparent, 
-                rgba(99, 102, 241, 0.8), 
+                rgba(99, 102, 241, 1), 
                 transparent 30%
             );
             animation: rotate 4s linear infinite;
@@ -61,7 +58,7 @@
 
         .glass-input {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08); /* Finer border */
+            border: 1px solid rgba(255, 255, 255, 0.08); 
             color: #e2e8f0;
             transition: all 0.3s ease;
         }
@@ -69,7 +66,6 @@
         .glass-input:focus {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(99, 102, 241, 0.6);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); /* Soft glow */
             outline: none;
         }
 
